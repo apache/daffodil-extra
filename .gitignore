@@ -41,3 +41,10 @@ resource_managed
 
 # Project local cache of managed dependencies
 lib_managed
+
+# vscode/metals generated files
+.vscode
+.metals
+.bloop
+
+Cargo.lock
