@@ -16,7 +16,7 @@
  */
 
 mod helper_functions;
-mod read_seek;
+mod stdin_seek;
 
 use helper_functions::{lsbf_dump, open_and_seek_input_stream};
 

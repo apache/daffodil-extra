@@ -18,12 +18,6 @@
 // View https://rust-lang.github.io/api-guidelines/naming.html for naming conventions for traits and structs
 use std::io::{self, Cursor, Read, Seek, SeekFrom};
 
-// Need custom trait so we can do Box<dyn CustomReadSeek>
-// as Box<dyn Read + Seek> can't be done since both Read
-// and Seek are non-auto traits
-pub trait CustomReadSeek: Read + Seek {}
-impl<T: Read + Seek> CustomReadSeek for T {}
-
 pub struct StdinWithSeek;
 
 impl Read for StdinWithSeek {
