@@ -46,3 +46,5 @@ lib_managed
 .vscode
 .metals
 .bloop
+
+Cargo.lock
