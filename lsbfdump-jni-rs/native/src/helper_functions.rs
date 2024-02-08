@@ -17,11 +17,8 @@
 
 // View https://rust-lang.github.io/api-guidelines/naming.html for naming conventions for functions
 
-use crate::stdin_seek::StdinWithSeek;
-
 use std::fs::File;
 use std::io::{self, Read, Seek, SeekFrom};
-
 
 pub fn lsbf_dump(reader: &mut dyn Read, offset: u64, length: u64, show_address: bool) -> io::Result<Vec<String>> {
   let mut lines = Vec::new();
@@ -46,9 +43,19 @@ pub fn lsbf_dump(reader: &mut dyn Read, offset: u64, length: u64, show_address: 
 
 pub fn open_and_seek_input_stream(filename: &str, offset: u64) -> io::Result<Box<dyn Read>> {
   if filename == "-" {
-    let mut stdin_with_seek = StdinWithSeek;
-    stdin_with_seek.seek(SeekFrom::Start(offset))?;
-    Ok(Box::new(stdin_with_seek) as Box<dyn Read>)
+    let stdin = io::stdin();
+    let mut reader = stdin.lock();
+    let mut remaining_bytes_to_seek = offset;
+
+    while remaining_bytes_to_seek > 0 {
+      let mut temp_buffer = [0; 1];
+      match reader.read_exact(&mut temp_buffer) {
+        Ok(_) => remaining_bytes_to_seek -= 1,
+        Err(e) => return Err(e),
+      }
+    }
+
+    Ok(Box::new(reader) as Box<dyn Read>)
   } else {
     let file = File::open(filename)?;
     let mut file_seek = io::BufReader::new(file);
